@@ -6,7 +6,6 @@ struct maze{
 struct pos{
     int x;
     int y;
-    int returnCode;
 }
 int validateMaze{
     // make sure 5 <= height <= 100
@@ -16,23 +15,24 @@ int validateMaze{
         // each character is either ' ', '#', 'S' or 'E'
         // there is exactly one 'S' and 'E'
         // when 'S' is reached replace with 'X'
+    // if any of these fail give error message and end program
     // go back to main
 }
 int moveUp(currentPos){
-    // calculate position if moved up
-    // call checkTile
+    // calculate position if moved up and store as newPos
+    // call checkTile and return result
 }
 int moveLeft(currentPos){
-    // calculate position if moved left
-    // call checkTile
+    // calculate position if moved left and store as newPos
+    // call checkTile and return result
 }
 int moveDown(currentPos){
-    // calculate position if moved down
-    // call checkTile
+    // calculate position if moved down and store as newPos
+    // call checkTile and return result
 }
 int moveRight(currentPos){
-    // calculate position if moved right
-    // call checkTile
+    // calculate position if moved right and store as newPos
+    // call checkTile and return result
 }
 int checkTile(currentPos, newPos){
     // return code 0 if input location is ' ' or 'S' and call movePlayer
@@ -42,16 +42,15 @@ int checkTile(currentPos, newPos){
 int movePlayer(currentPos, newPos){
     // if 0 or 1 returned, make current position of 'X' into ' '
     // change new position given to 'X'
-    // return code 1 if end reached, 0 otherwise
 }
 void showMap{
     // display maze file line by line
 }
 int main{
-    // load from file
-    // if the file exists:
+    // if the file exists and is in .txt format:
+        // load maze from file
         // call validateMaze
-    // else give error message and end
+    // else give error message and end program
     // loop until E reached:
         // ask for input
         // w - call moveUp
