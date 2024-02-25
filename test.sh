@@ -143,7 +143,7 @@ fi
 echo -e "Testing Inputs"
 
 echo -n "No input given - "
-echo "" | ./maze mazes/standard_maze.txt <> tmp
+echo "" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "Invalid input.";
 then
     echo "PASS"
@@ -152,7 +152,7 @@ else
 fi
 
 echo -n "Invalid input given - "
-echo "x" | ./maze mazes/standard_maze.txt <> tmp
+echo "x" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "Invalid input.";
 then
     echo "PASS"
@@ -161,7 +161,7 @@ else
 fi
 
 echo -n "W inputted for valid move - "
-echo "W" | ./maze mazes/standard_maze.txt <> tmp
+echo "W" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved up.";
 then
     echo "PASS"
@@ -170,7 +170,7 @@ else
 fi
 
 echo -n "w inputted for valid move - "
-echo "W" | ./maze mazes/standard_maze.txt <> tmp
+echo "W" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved up.";
 then
     echo "PASS"
@@ -179,7 +179,7 @@ else
 fi
 
 echo -n "w inputted for invalid move - "
-echo "W" | ./maze mazes/unmovable_maze.txt <> tmp
+echo "W" | ./maze mazes/unmovable_maze.txt > tmp
 if grep -q "Cannot make this move.";
 then
     echo "PASS"
@@ -188,7 +188,7 @@ else
 fi
 
 echo -n "a inputted for valid move - "
-echo "a" | ./maze mazes/standard_maze.txt <> tmp
+echo "a" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved left.";
 then
     echo "PASS"
@@ -197,7 +197,7 @@ else
 fi
 
 echo -n "a inputted for invalid move - "
-echo "a" | ./maze mazes/unmovable_maze.txt <> tmp
+echo "a" | ./maze mazes/unmovable_maze.txt > tmp
 if grep -q "Cannot make this move.";
 then
     echo "PASS"
@@ -206,7 +206,7 @@ else
 fi
 
 echo -n "s inputted for valid move - "
-echo "s" | ./maze mazes/standard_maze.txt <> tmp
+echo "s" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved down.";
 then
     echo "PASS"
@@ -215,7 +215,7 @@ else
 fi
 
 echo -n "s inputted for invalid move - "
-echo "s" | ./maze mazes/unmovable_maze.txt <> tmp
+echo "s" | ./maze mazes/unmovable_maze.txt > tmp
 if grep -q "Cannot make this move.";
 then
     echo "PASS"
@@ -224,7 +224,7 @@ else
 fi
 
 echo -n "d inputted for valid move - "
-echo "d" | ./maze mazes/standard_maze.txt <> tmp
+echo "d" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved right.";
 then
     echo "PASS"
@@ -233,7 +233,7 @@ else
 fi
 
 echo -n "d inputted for invalid move - "
-echo "d" | ./maze mazes/unmovable_maze.txt <> tmp
+echo "d" | ./maze mazes/unmovable_maze.txt > tmp
 if grep -q "Cannot make this move.";
 then
     echo "PASS"
@@ -242,7 +242,7 @@ else
 fi
 
 echo -n "m inputted"
-echo "d" | ./maze mazes/standard_maze.txt <> tmp
+echo "d" | ./maze mazes/standard_maze.txt > tmp
 if grep -q "Map:";
 then
     echo "PASS"
@@ -250,8 +250,9 @@ else
     echo "FAIL"
 fi
 
-echo -n "Win condition reached - "
-echo "w" | ./maze mazes/instant_win_maze.txt <> tmp
+# Includes both valid and invalid moves
+echo -n "Full maze playthrough - "
+./maze mazes/standard_maze.txt <inputs/input.txt> tmp
 if grep -q "You have completed the maze!";
 then
     echo "PASS"
