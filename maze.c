@@ -7,7 +7,7 @@ struct pos{
     int x;
     int y;
 }
-int validateMaze{
+int validateMaze(){
     // make sure 5 <= height <= 100
     // make sure 5 <= width <= 100
     // loop through each row to check:
@@ -43,10 +43,10 @@ int movePlayer(currentPos, newPos){
     // if 0 or 1 returned, make current position of 'X' into ' '
     // change new position given to 'X'
 }
-void showMap{
+void showMap(){
     // display maze file line by line
 }
-int main{
+int main(){
     // if the file exists and is in .txt format:
         // load maze from file
         // call validateMaze
