@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "Argument Tests"
+echo -e "Testing Arguments"
 
 echo -n "No argument - "
 ./maze > tmp
@@ -95,6 +95,24 @@ else
     echo "FAIL"
 fi
 
+echo -n "Maze has multiple ends - "
+timeout 0.2s ./maze mazes/two_ends_maze.txt > tmp
+if grep -q "Error: maze file does not have expected format." tmp;
+then
+    echo "PASS"
+else
+    echo "FAIL"
+fi
+
+echo -n "Maze has no start - "
+timeout 0.2s ./maze mazes/no_start_maze.txt > tmp
+if grep -q "Error: maze file does not have expected format." tmp;
+then
+    echo "PASS"
+else
+    echo "FAIL"
+fi
+
 echo -n "Maze has no end - "
 timeout 0.2s ./maze mazes/endless_maze.txt > tmp
 if grep -q "Error: maze file does not have expected format." tmp;
@@ -151,6 +169,7 @@ else
     echo "FAIL"
 fi
 
+# Test upper case can be inputted
 echo -n "W inputted for valid move - "
 echo "W" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp
 if grep -q "You have moved up." tmp;
@@ -241,7 +260,7 @@ else
     echo "FAIL"
 fi
 
-# Includes both valid and invalid moves
+# Includes both valid and invalid moves, and both upper and lower case
 echo -n "Full maze playthrough - "
 timeout 0.2s ./maze mazes/standard_maze.txt <inputs/input.txt> tmp
 if grep -q "You have completed the maze!" tmp;
