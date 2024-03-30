@@ -1,3 +1,9 @@
+/**
+* @file maze.c
+* @author Asher Sethi
+* @brief Code for COMP1921 Coursework 2
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -15,29 +21,79 @@ struct maze{
 }
 
 // a procedure to tidy up the dynamically allocated memory before exiting the program
-void freeMaze(){
+void freeMaze(maze* this){
     // check maze isn't null
+    if (this == NULL){
+        return;
+    }
+
     // set each pointer to null
+    if (this->mazeArray != NULL) {
+        for (int i = 0; i < this->height; i++){
+            free(this->mazeArray[i]);
+            this->mazeArray[i] = NULL;
+        }
+        free(this->mazeArray);
+        this->mazeArray = null;
+
+    }
     // set array of null pointers to 0
     // free image pointer
 }
 
 // a function to create the maze struct
-int createMaze(filename){
+int createMaze(maze* this, filename){
     // call openFile()
     // if it is unopenable, give an error message and return 2
     FILE* file = fopen(filename,"r");
     if (file == NULL){
         return 2;
-    }
-
+    }  
     // otherwise, check first row is of length between 5 and 100, and store as width
+    
+    char line[1000];
+    char* tempArray[1000][1000];
+    fgets(line,1000,file);
+    
     // loop through each row of the first column:
         // increase a counter by 1 for each iteration
     // check counter is between 5 and 100, and store as height
+    int count = 0;
+
+    while (fgets(line, 1000, file)){
+        if (count == 0){
+            if (strlen(line) < 5 || strlen(line) > 100){
+                return 3;
+            } else {
+                int width = strlen(line);
+                tempArray[0] = line;
+            }
+        }
+        for (character in line){
+            tempArray[count][character] = line[character];
+        }
+        count += 1;
+    }
+    if (count < 5 || count > 100){
+        return 3;
+    } else {
+        int height = count;
+    }
+    
     // if height and width are valid:
         // initialise a pointer for the maze struct
-        // allocate array height as height
+
+    this->height = height;
+    this->width = width;
+
+    this->mazeArray = malloc(this->height);
+
+    for (int y = 0; y < height; y++){
+        this->mazeArray[i] = malloc(this->width);
+        for (int x = 0; x < width; x++){
+            character = tempArray[y][x];
+        }
+    }
         // loop through each row:
             // allocate the array width for that row as width
             // convert each character to an element of the maze array 
@@ -179,6 +235,7 @@ void showMap(){
 }
 
 int main(args){
+    maze *this = malloc(sizeof(maze)); // done in main 
     // DON'T NEED TO check the file is in .txt format
     // check args are valid
     // if it is:
@@ -194,17 +251,19 @@ int main(args){
         exit(EXIT_ARG);
     }
 
-    int mazeCheck = validateMaze(args[0]);
+    int mazeCheck = validateMaze(this, args[0]);
     if (mazeCheck == 2){
         printf("Error: Invalid filename.");
+        freeMaze(this);
         exit(EXIT_FILE);
     } else if (mazeCheck == 3){
         printf("Error: maze file does not have expected format.");
+        freeMaze(this);
         exit(EXIT_MAZE);
     
     getInput(this);
     printf("You have completed the maze!");
-    freeMaze();
+    freeMaze(this);
     exit(EXIT_SUCCESS);
     
 }
