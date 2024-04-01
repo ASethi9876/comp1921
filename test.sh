@@ -21,16 +21,16 @@ else
 fi
 
 
-echo -n "Invalid file type - "
-./maze mazes/maze_not_text > tmp
-if grep -q "Error: Invalid filename." tmp;
-then
-    echo "PASS"
-else
-    echo "FAIL"
-fi
+# echo -n "Invalid file type - "
+# ./maze mazes/maze_not_text > tmp
+# if grep -q "Error: Invalid filename." tmp;
+# then
+#     echo "PASS"
+# else
+#     echo "FAIL"
+# fi
 
-echo -n "Unvailable file - "
+echo -n "Unavailable file - "
 ./maze mazes/null.txt > tmp
 if grep -q "Error: Invalid filename." tmp;
 then

@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define EXIT_SUCCESS 0
 #define EXIT_ARG 1
@@ -13,15 +14,16 @@
 #define EXIT_INV 3
 
 // a struct to hold the maze and the position of the player
-struct maze{
+typedef struct __Maze{
     int height;
     int width;
-    int* currentPos[2]
-    char* mazeArray[height][width];
-}
+    int currentPos[2];
+    char** mazeArray;
+} maze;
 
 // a procedure to tidy up the dynamically allocated memory before exiting the program
 void freeMaze(maze* this){
+    printf("aaa");
     // check maze isn't null
     if (this == NULL){
         return;
@@ -34,15 +36,44 @@ void freeMaze(maze* this){
             this->mazeArray[i] = NULL;
         }
         free(this->mazeArray);
-        this->mazeArray = null;
+        this->mazeArray = NULL;
 
     }
     // set array of null pointers to 0
     // free image pointer
 }
 
+int validateMaze(maze* this){
+    int sCount = 0;
+    int eCount = 0;
+    for (int y = 0; y < this->height; y++){
+        for (int x = 0; x < this->width; x++){
+            char c = this->mazeArray[y][x];
+            if (c == 'S') {
+                if (sCount != 0){
+                    return 3;
+                } else {
+                    sCount = 1;
+                    this->mazeArray[y][x] = 'X';
+                    this->currentPos[0] = y, this->currentPos[1] = x;
+                }
+            } else if (c == 'E'){
+                if (eCount != 0){
+                    return 3;
+                } else {
+                    eCount = 1;
+                }
+            // } else if (c != ' ' || c != '#'){
+            //     return 3;
+            }
+        }
+    }
+    return 0;
+
+}
+
 // a function to create the maze struct
-int createMaze(maze* this, filename){
+int createMaze(maze* this, char* filename){
     // call openFile()
     // if it is unopenable, give an error message and return 2
     FILE* file = fopen(filename,"r");
@@ -52,48 +83,47 @@ int createMaze(maze* this, filename){
     // otherwise, check first row is of length between 5 and 100, and store as width
     
     char line[1000];
-    char* tempArray[1000][1000];
-    fgets(line,1000,file);
+    char tempArray[1000][1000];
     
     // loop through each row of the first column:
         // increase a counter by 1 for each iteration
     // check counter is between 5 and 100, and store as height
     int count = 0;
-
-    while (fgets(line, 1000, file)){
+    int width = 0;
+    while (fgets(line, sizeof(line), file)){
+        width = strlen(line);
+        printf("%d",width);
         if (count == 0){
-            if (strlen(line) < 5 || strlen(line) > 100){
+            if (width < 5 || width > 100){
                 return 3;
-            } else {
-                int width = strlen(line);
-                tempArray[0] = line;
             }
         }
-        for (character in line){
-            tempArray[count][character] = line[character];
+        int i = 0;
+        while (line[i] != '\n'){
+            tempArray[count][i] = line[i];
+            i++;
         }
-        count += 1;
+        count++;
     }
-    if (count < 5 || count > 100){
+    int height = count;
+    if (height < 5 || height > 100){
         return 3;
-    } else {
-        int height = count;
     }
-    
     // if height and width are valid:
         // initialise a pointer for the maze struct
-
     this->height = height;
     this->width = width;
-
+    printf("%d %d", height, width);
     this->mazeArray = malloc(this->height);
 
     for (int y = 0; y < height; y++){
-        this->mazeArray[i] = malloc(this->width);
+        this->mazeArray[y] = malloc(this->width);
         for (int x = 0; x < width; x++){
-            character = tempArray[y][x];
+            this->mazeArray[y][x] = tempArray[y][x];
         }
     }
+    int mazeTest = validateMaze(this);
+    return mazeTest;
         // loop through each row:
             // allocate the array width for that row as width
             // convert each character to an element of the maze array 
@@ -101,15 +131,94 @@ int createMaze(maze* this, filename){
         // call validateMaze() and return the result
     // else:
         // give error message and return 3
-    }
 
-int validateMaze(){
-    // loop through each element of each row of mazeArray:
-        // each character is either ' ', '#', 'S' or 'E'
-        // there is exactly one 'S' and 'E'
-        // if either of these fail, call freeMaze(), give an error message and return 3
-        // when 'S' is reached replace with 'X' and store position in struct
-    // if successful, go back to main and 0
+}
+
+void movePlayer(maze* this, int* newPos){
+    this->mazeArray[this->currentPos[0]][this->currentPos[1]] = ' ';
+    this->currentPos[0] = newPos[0], this->currentPos[1] = newPos[1];
+    this->mazeArray[newPos[0]][newPos[1]] = 'X';
+}
+
+int checkTile(maze* this, int* newPos){
+    if (newPos[0] < 0 || newPos[0] >= this->height || newPos[1] < 0 || newPos[1] >= this->width){
+        printf("Cannot make this move.");
+        return 2;
+    } else {
+        char value = this->mazeArray[newPos[0]][newPos[1]];
+        if (value == 'E') {
+            printf("%c",value);
+            return 0;
+        } else if (value == ' ' || value == 'S'){
+            movePlayer(this, newPos);
+            return 1;
+        } else {
+            printf("Cannot make this move.");
+            return 2;
+        }
+    }
+}
+
+int moveUp(maze* this){
+    // get both values from currentPos
+    // subtract 1 from currentPos[1] NOPE
+    // store as newPos
+    // call checkTile() and return result
+    // alert user that they have moved up if checkTile() returns 0 or 1
+    int newPos[2] = {};
+    newPos[0] = this->currentPos[0] - 1; 
+    newPos[1] = this->currentPos[1];
+    int value = checkTile(this, newPos);
+    if (value <= 1){
+        printf("You have moved up.");
+    }
+    return value;
+    
+}
+
+int moveLeft(maze* this){
+    int newPos[2] = {};
+    newPos[0] = this->currentPos[0]; 
+    newPos[1] = this->currentPos[1] - 1;
+    int value = checkTile(this, newPos);
+    if (value <= 1){
+        printf("You have moved left.");
+    }
+    return value;
+}
+
+int moveDown(maze* this){
+    int newPos[2] = {};
+    newPos[0] = this->currentPos[0] + 1; 
+    newPos[1] = this->currentPos[1];
+    int value = checkTile(this, newPos);
+    if (value <= 1){
+        printf("You have moved down.");
+    }
+    return value;
+}
+
+int moveRight(maze* this){
+    int newPos[2] = {};
+    newPos[0] = this->currentPos[0]; 
+    newPos[1] = this->currentPos[1] + 1;
+    int value = checkTile(this, newPos);
+    if (value <= 1){
+        printf("You have moved right.");
+    }
+    return value;
+}
+
+void showMap(maze* this){
+    // loop through each row of the maze and print it
+    printf("Map: \n");
+    printf("%d",this->height);
+    for (int y = 0; y < this->height; y++){
+        for (int x = 0; x < this->width; x++){
+            printf("%c", this->mazeArray[y][x]);
+        }
+        printf("\n");
+    }
 }
 
 int getInput(maze* this){
@@ -149,121 +258,39 @@ int getInput(maze* this){
             
             case 'M':
             case 'm':
-                showMap();
+                showMap(this);
                 break;
 
             default:
                 printf("Invalid input.");
                 break;
         }
+    }
     return 0;
-    }
 }
 
-
-int moveUp(maze* this){
-    // get both values from currentPos
-    // subtract 1 from currentPos[1]
-    // store as newPos
-    // call checkTile() and return result
-    // alert user that they have moved up if checkTile() returns 0 or 1
-    int newPos[2] = this->currentPos;
-    newPos[1] -= 1;
-    int value = checkTile(this, newPos);
-    if (value <= 1){
-        printf("You have moved up.");
-    }
-    return value;
-    
-}
-
-int moveLeft(maze* this){
-    // get both values from currentPos
-    // subtract 1 from currentPos[0]
-    // store as newPos
-    // call checkTile() and return result
-    // alert user that they have moved left if checkTile() returns 0 or 1
-}
-
-int moveDown(maze* this){
-    // get both values from currentPos
-    // add 1 to currentPos[1]
-    // store as newPos
-    // call checkTile() and return result
-    // alert user that they have moved down if checkTile() returns 0 or 1
-}
-
-int moveRight(maze* this){
-    // get both values from currentPos
-    // add 1 to currentPos[0]
-    // store as newPos
-    // call checkTile() and return result
-    // alert user that they have moved right if checkTile() returns 0 or 1
-}
-
-int checkTile(maze* this, int* newPos){
-    // search for the value stored in mazeArray at the position given
-    // return code 0 if input location is ' ' or 'S' and call movePlayer()
-    // return code 1 if input location is 'E' and call movePlayer()
-    // return code 2 & give message if input location is '#' or outside of the array
-    if (newPos[0] < 0 || newPos[0] > this->height || newPos[1] < 0 || newPos[1] > this->width){
-        return 2;
-    } else {
-        char value = this->mazeArray[newPos[0]][newPos[1]];
-        if (value = 'E') {
-            return 0;
-        } else if (value = ' ' || value = 'S'){
-            movePlayer(this, newPos);
-            return 1;
-        } else {
-            return 2;
-        }
-    }
-}
-
-void movePlayer(maze* this, int* newPos){
-    // make current position of 'X' in mazeArray into ' '
-    // change new position given to 'X'
-    // update currentPos in struct to match this
-    this->mazeArray[currentPos[0]][currentPos[1]] = ' ';
-    this->currentPos = newPos;
-    this->mazeArray[newPos[0]][newPos[1]] = 'X';
-}
-
-void showMap(){
-    // loop through each row of the maze and print it
-}
-
-int main(args){
-    maze *this = malloc(sizeof(maze)); // done in main 
-    // DON'T NEED TO check the file is in .txt format
-    // check args are valid
-    // if it is:
-        // call validateMaze(), end program if 2/3 returned
-        // call getInput()
-        // once 0 is returned from getInput():
-            // give win message
-            // call freeMaze()
-            // end program
-    // else give error message and end program exit code 1
-    if (args.length() != 1){
-        printf("Usage: maze <filename>.");
+int main(int argc, char* argv[]){
+    if (argc != 2){ // needs exactly ./maze and filename for arguments
+        printf("Usage: maze <filename>. \n");
         exit(EXIT_ARG);
     }
 
-    int mazeCheck = validateMaze(this, args[0]);
+    maze* this = malloc(sizeof(maze)); // allocate enough memory for the structure in main
+
+    int mazeCheck = createMaze(this, argv[1]);
     if (mazeCheck == 2){
-        printf("Error: Invalid filename.");
+        printf("Error: Invalid filename. \n");
         freeMaze(this);
         exit(EXIT_FILE);
     } else if (mazeCheck == 3){
-        printf("Error: maze file does not have expected format.");
+        printf("Error: maze file does not have expected format. \n");
         freeMaze(this);
-        exit(EXIT_MAZE);
-    
+        exit(EXIT_INV);
+    } else {
     getInput(this);
-    printf("You have completed the maze!");
+    printf("You have completed the maze! \n");
     freeMaze(this);
     exit(EXIT_SUCCESS);
-    
+    }
+    return 0;
 }
