@@ -124,7 +124,7 @@ fi
 
 echo -n "Minimum size for maze - "
 timeout 0.2s ./maze mazes/min_maze.txt > tmp
-if grep -q "File standard_maze.txt successfully loaded." tmp;
+if grep -q "File mazes/min_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
 else
@@ -133,7 +133,7 @@ fi
 
 echo -n "Maximum size for maze - "
 timeout 0.2s ./maze mazes/max_maze.txt > tmp
-if grep -q "File standard_maze.txt successfully loaded." tmp;
+if grep -q "File mazes/max_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
 else
@@ -142,7 +142,7 @@ fi
 
 echo -n "Standard size maze - "
 timeout 0.2s ./maze mazes/standard_maze.txt > tmp
-if grep -q "File standard_maze.txt successfully loaded." tmp;
+if grep -q "File mazes/standard_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
 else

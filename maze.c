@@ -23,7 +23,6 @@ typedef struct __Maze{
 
 // a procedure to tidy up the dynamically allocated memory before exiting the program
 void freeMaze(maze* this){
-    printf("aaa");
     // check maze isn't null
     if (this == NULL){
         return;
@@ -41,6 +40,17 @@ void freeMaze(maze* this){
     }
     // set array of null pointers to 0
     // free image pointer
+}
+
+void showMap(maze* this){
+    // loop through each row of the maze and print it
+    printf("Map: \n");
+    for (int y = 0; y < this->height; y++){
+        for (int x = 0; x < this->width; x++){
+            printf("%c", this->mazeArray[y][x]);
+        }
+        printf("\n");
+    }
 }
 
 int validateMaze(maze* this){
@@ -63,13 +73,12 @@ int validateMaze(maze* this){
                 } else {
                     eCount = 1;
                 }
-            // } else if (c != ' ' || c != '#'){
-            //     return 3;
+            //} else if (c != ' ' && c != '#'){
+               // return 3;
             }
         }
     }
     return 0;
-
 }
 
 // a function to create the maze struct
@@ -91,19 +100,18 @@ int createMaze(maze* this, char* filename){
     int count = 0;
     int width = 0;
     while (fgets(line, sizeof(line), file)){
-        width = strlen(line);
-        printf("%d",width);
-        if (count == 0){
-            if (width < 5 || width > 100){
-                return 3;
-            }
-        }
         int i = 0;
-        while (line[i] != '\n'){
+        while (line[i+1] != 'n'){ // stops at the newline
             tempArray[count][i] = line[i];
             i++;
         }
         count++;
+        if (i < 5 || i > 100){  // check if wrong size or line width is different to previous width
+            return 3;
+        } else {
+            width = i;
+        }
+
     }
     int height = count;
     if (height < 5 || height > 100){
@@ -113,7 +121,6 @@ int createMaze(maze* this, char* filename){
         // initialise a pointer for the maze struct
     this->height = height;
     this->width = width;
-    printf("%d %d", height, width);
     this->mazeArray = malloc(this->height);
 
     for (int y = 0; y < height; y++){
@@ -122,6 +129,13 @@ int createMaze(maze* this, char* filename){
             this->mazeArray[y][x] = tempArray[y][x];
         }
     }
+
+    this->mazeArray[0] = malloc(this->width);
+    for (int x = 0; x < width; x++){ // necessary fix as previously the first line was storing a random set of characters
+        this->mazeArray[0][x] = tempArray[0][x];
+    }
+
+    //showMap(this);
     int mazeTest = validateMaze(this);
     return mazeTest;
         // loop through each row:
@@ -209,18 +223,6 @@ int moveRight(maze* this){
     return value;
 }
 
-void showMap(maze* this){
-    // loop through each row of the maze and print it
-    printf("Map: \n");
-    printf("%d",this->height);
-    for (int y = 0; y < this->height; y++){
-        for (int x = 0; x < this->width; x++){
-            printf("%c", this->mazeArray[y][x]);
-        }
-        printf("\n");
-    }
-}
-
 int getInput(maze* this){
 
     printf("W - Move up. \n");
@@ -279,18 +281,19 @@ int main(int argc, char* argv[]){
 
     int mazeCheck = createMaze(this, argv[1]);
     if (mazeCheck == 2){
-        printf("Error: Invalid filename. \n");
+        printf("Error: Invalid filename.\n");
         freeMaze(this);
         exit(EXIT_FILE);
     } else if (mazeCheck == 3){
-        printf("Error: maze file does not have expected format. \n");
+        printf("Error: maze file does not have expected format.\n");
         freeMaze(this);
         exit(EXIT_INV);
     } else {
-    getInput(this);
-    printf("You have completed the maze! \n");
-    freeMaze(this);
-    exit(EXIT_SUCCESS);
+        printf("File %s successfully loaded.\n",argv[1]);
+        getInput(this);
+        printf("You have completed the maze!\n");
+        freeMaze(this);
+        exit(EXIT_SUCCESS);
     }
     return 0;
 }
