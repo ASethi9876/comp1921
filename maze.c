@@ -73,8 +73,8 @@ int validateMaze(maze* this){
                 } else {
                     eCount = 1;
                 }
-            //} else if (c != ' ' && c != '#'){
-               // return 3;
+            } else if (c != ' ' && c != '#'){
+                return 3;
             }
         }
     }
@@ -105,12 +105,12 @@ int createMaze(maze* this, char* filename){
             tempArray[count][i] = line[i];
             i++;
         }
-        count++;
-        if (i < 5 || i > 100){  // check if wrong size or line width is different to previous width
+        if (i < 5 || i > 100 || (width != i && count > 0)){  // check if wrong size or line width is different to previous width
             return 3;
         } else {
             width = i;
         }
+        count++;
 
     }
     int height = count;
@@ -156,18 +156,17 @@ void movePlayer(maze* this, int* newPos){
 
 int checkTile(maze* this, int* newPos){
     if (newPos[0] < 0 || newPos[0] >= this->height || newPos[1] < 0 || newPos[1] >= this->width){
-        printf("Cannot make this move.");
+        printf("Cannot make this move.\n");
         return 2;
     } else {
         char value = this->mazeArray[newPos[0]][newPos[1]];
-        if (value == 'E') {
-            printf("%c",value);
+        if (value == 'E'){
             return 0;
         } else if (value == ' ' || value == 'S'){
             movePlayer(this, newPos);
             return 1;
         } else {
-            printf("Cannot make this move.");
+            printf("Cannot make this move.\n");
             return 2;
         }
     }
@@ -184,7 +183,7 @@ int moveUp(maze* this){
     newPos[1] = this->currentPos[1];
     int value = checkTile(this, newPos);
     if (value <= 1){
-        printf("You have moved up.");
+        printf("You have moved up.\n");
     }
     return value;
     
@@ -196,7 +195,7 @@ int moveLeft(maze* this){
     newPos[1] = this->currentPos[1] - 1;
     int value = checkTile(this, newPos);
     if (value <= 1){
-        printf("You have moved left.");
+        printf("You have moved left.\n");
     }
     return value;
 }
@@ -207,7 +206,7 @@ int moveDown(maze* this){
     newPos[1] = this->currentPos[1];
     int value = checkTile(this, newPos);
     if (value <= 1){
-        printf("You have moved down.");
+        printf("You have moved down.\n");
     }
     return value;
 }
@@ -218,18 +217,18 @@ int moveRight(maze* this){
     newPos[1] = this->currentPos[1] + 1;
     int value = checkTile(this, newPos);
     if (value <= 1){
-        printf("You have moved right.");
+        printf("You have moved right.\n");
     }
     return value;
 }
 
 int getInput(maze* this){
 
-    printf("W - Move up. \n");
-    printf("A - Move left. \n");
-    printf("S - Move down. \n");
-    printf("D - Move right. \n");
-    printf("M - Display map. \n");
+    printf("W - Move up.\n");
+    printf("A - Move left.\n");
+    printf("S - Move down.\n");
+    printf("D - Move right.\n");
+    printf("M - Display map.\n");
     
     int value = 1;
     while (value != 0){
