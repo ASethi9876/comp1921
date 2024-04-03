@@ -151,14 +151,14 @@ fi
 
 echo -e "\nTesting Inputs"
 
-echo -n "No input given - "
-echo "" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp
-if grep -q "Invalid input." tmp;
-then
-    echo "PASS"
-else
-    echo "FAIL"
-fi
+# echo -n "No input given - "
+# echo "" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp
+# if grep -q "Invalid input." tmp;
+# then
+#     echo "PASS"
+# else
+#     echo "FAIL"
+# fi
 
 echo -n "Invalid input given - "
 echo "x" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp

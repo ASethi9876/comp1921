@@ -253,9 +253,9 @@ int getInput(maze* this){
             case 'm':
                 showMap(this);
                 break;
-
+            
             default:
-                printf("Invalid input.");
+                printf("Invalid input.\n");
                 break;
         }
     }
@@ -264,7 +264,7 @@ int getInput(maze* this){
 
 int main(int argc, char* argv[]){
     if (argc != 2){ // needs exactly ./maze and filename for arguments
-        printf("Usage: maze <filename>. \n");
+        printf("Usage: maze <filename>.\n");
         exit(EXIT_ARG);
     }
 
