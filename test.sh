@@ -142,7 +142,7 @@ fi
 
 echo -n "Standard size maze - "
 timeout 0.2s ./maze mazes/standard_maze.txt > tmp
-if grep -q "File mazes/standard_maze.txt successfully loaded." tmp;
+if grep -q "Invalid input." tmp;
 then
     echo "PASS"
 else

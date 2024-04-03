@@ -78,7 +78,11 @@ int validateMaze(maze* this){
             }
         }
     }
-    return 0;
+    if (sCount == 0 || eCount == 0){
+        return 3;
+    } else {
+        return 0;
+    }
 }
 
 // a function to create the maze struct
@@ -107,6 +111,7 @@ int createMaze(maze* this, char* filename){
         }
         if (i < 5 || i > 100 || (width != i && count > 0)){  // check if wrong size or line width is different to previous width
             return 3;
+            
         } else {
             width = i;
         }
@@ -121,30 +126,17 @@ int createMaze(maze* this, char* filename){
         // initialise a pointer for the maze struct
     this->height = height;
     this->width = width;
-    this->mazeArray = malloc(this->height);
+    this->mazeArray = malloc(this->height * sizeof(char*));
 
-    for (int y = 0; y < height; y++){
+    for (int y = 0; y < this->height; y++){
         this->mazeArray[y] = malloc(this->width);
-        for (int x = 0; x < width; x++){
+        for (int x = 0; x < this->width; x++){
             this->mazeArray[y][x] = tempArray[y][x];
         }
     }
 
-    this->mazeArray[0] = malloc(this->width);
-    for (int x = 0; x < width; x++){ // necessary fix as previously the first line was storing a random set of characters
-        this->mazeArray[0][x] = tempArray[0][x];
-    }
-
-    //showMap(this);
     int mazeTest = validateMaze(this);
     return mazeTest;
-        // loop through each row:
-            // allocate the array width for that row as width
-            // convert each character to an element of the maze array 
-            // if \n reached early or there are still chars left on the row call freeMaze(), give an error message and return 1
-        // call validateMaze() and return the result
-    // else:
-        // give error message and return 3
 
 }
 
