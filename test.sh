@@ -20,15 +20,7 @@ else
     echo "FAIL"
 fi
 
-
-# echo -n "Invalid file type - "
-# ./maze mazes/maze_not_text > tmp
-# if grep -q "Error: Invalid filename." tmp;
-# then
-#     echo "PASS"
-# else
-#     echo "FAIL"
-# fi
+# Removed the test for 'invalid file type' as the brief says checking for this does not need to be part of the code
 
 echo -n "Unavailable file - "
 ./maze mazes/null.txt > tmp
@@ -123,7 +115,7 @@ else
 fi
 
 echo -n "Minimum size for maze - "
-timeout 0.2s ./maze mazes/min_maze.txt > tmp
+stdbuf -o0 timeout 0.2s ./maze mazes/min_maze.txt > tmp # Use of 'stdbuf -o0' has been adapted from an example provided from: https://blog.robertelder.org/intro-to-stdbuf-command/
 if grep -q "File mazes/min_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
@@ -132,7 +124,7 @@ else
 fi
 
 echo -n "Maximum size for maze - "
-timeout 0.2s ./maze mazes/max_maze.txt > tmp
+stdbuf -o0 timeout 0.2s ./maze mazes/max_maze.txt > tmp
 if grep -q "File mazes/max_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
@@ -141,8 +133,8 @@ else
 fi
 
 echo -n "Standard size maze - "
-timeout 0.2s ./maze mazes/standard_maze.txt > tmp
-if grep -q "Invalid input." tmp;
+stdbuf -o0 timeout 0.2s ./maze mazes/standard_maze.txt > tmp
+if grep -q "File mazes/standard_maze.txt successfully loaded." tmp;
 then
     echo "PASS"
 else
@@ -151,14 +143,7 @@ fi
 
 echo -e "\nTesting Inputs"
 
-# echo -n "No input given - "
-# echo "" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp
-# if grep -q "Invalid input." tmp;
-# then
-#     echo "PASS"
-# else
-#     echo "FAIL"
-# fi
+# Removed the test for 'no input given' because the program will wait until the user has entered a character
 
 echo -n "Invalid input given - "
 echo "x" | timeout 0.2s ./maze mazes/standard_maze.txt > tmp

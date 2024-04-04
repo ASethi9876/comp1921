@@ -21,14 +21,16 @@ typedef struct __Maze{
     char** mazeArray;
 } maze;
 
-// a procedure to tidy up the dynamically allocated memory before exiting the program
+/**
+* @brief Free the memory allocated to the maze struct
+*
+* @param this the pointer to the maze struct being freed
+*/
 void freeMaze(maze* this){
-    // check maze isn't null
     if (this == NULL){
         return;
     }
 
-    // set each pointer to null
     if (this->mazeArray != NULL) {
         for (int i = 0; i < this->height; i++){
             free(this->mazeArray[i]);
@@ -38,12 +40,14 @@ void freeMaze(maze* this){
         this->mazeArray = NULL;
 
     }
-    // set array of null pointers to 0
-    // free image pointer
 }
 
+/**
+* @brief Display the map of the maze
+*
+* @param this the pointer to the maze struct
+*/
 void showMap(maze* this){
-    // loop through each row of the maze and print it
     printf("Map: \n");
     for (int y = 0; y < this->height; y++){
         for (int x = 0; x < this->width; x++){
@@ -53,6 +57,11 @@ void showMap(maze* this){
     }
 }
 
+/**
+* @brief Check each character in the maze array is valid
+* @param this the pointer to the maze struct
+* @return int 0 if valid, 3 if invalid
+*/
 int validateMaze(maze* this){
     int sCount = 0;
     int eCount = 0;
@@ -64,7 +73,7 @@ int validateMaze(maze* this){
                     return 3;
                 } else {
                     sCount = 1;
-                    this->mazeArray[y][x] = 'X';
+                    this->mazeArray[y][x] = 'X'; // Replaces the start with 'X', doesn't need to put back 'S' later as it isn't necessary info for the user
                     this->currentPos[0] = y, this->currentPos[1] = x;
                 }
             } else if (c == 'E'){
@@ -85,7 +94,12 @@ int validateMaze(maze* this){
     }
 }
 
-// a function to create the maze struct
+/**
+* @brief Allocate memory to the maze struct and check the height and width of the maze
+* @param this the pointer to the maze struct
+* @param filename the file pointer to open
+* @return int 0 if valid, 2 if file is invalid and 3 if maze is invalid
+*/
 int createMaze(maze* this, char* filename){
     // call openFile()
     // if it is unopenable, give an error message and return 2
@@ -96,14 +110,11 @@ int createMaze(maze* this, char* filename){
     // otherwise, check first row is of length between 5 and 100, and store as width
     
     char line[1000];
-    char tempArray[1000][1000];
-    
-    // loop through each row of the first column:
-        // increase a counter by 1 for each iteration
-    // check counter is between 5 and 100, and store as height
+    char tempArray[1000][1000]; // a larger than necessary array means it will not break if the maze is too large
+
     int count = 0;
     int width = 0;
-    while (fgets(line, sizeof(line), file)){
+    while (fgets(line, sizeof(line), file)){ // sizeof(line) acts like the buffer
         int i = 0;
         while (line[i+1] != 'n'){ // stops at the newline
             tempArray[count][i] = line[i];
@@ -122,8 +133,7 @@ int createMaze(maze* this, char* filename){
     if (height < 5 || height > 100){
         return 3;
     }
-    // if height and width are valid:
-        // initialise a pointer for the maze struct
+
     this->height = height;
     this->width = width;
     this->mazeArray = malloc(this->height * sizeof(char*));
@@ -140,12 +150,23 @@ int createMaze(maze* this, char* filename){
 
 }
 
+/**
+* @brief Updates the position of the player from their current location to new location
+* @param this the pointer to the maze struct
+* @param newPos the pointer to the new position that the player is moving to
+*/
 void movePlayer(maze* this, int* newPos){
     this->mazeArray[this->currentPos[0]][this->currentPos[1]] = ' ';
     this->currentPos[0] = newPos[0], this->currentPos[1] = newPos[1];
     this->mazeArray[newPos[0]][newPos[1]] = 'X';
 }
 
+/**
+* @brief Check the location the player is moving to is valid
+* @param this the pointer to the maze struct
+* @param newPos the pointer to the new position that the player is moving to
+* @return int 0 if the end is reached, 1 if the move is valid otherwise and 2 if the move is invalid
+*/
 int checkTile(maze* this, int* newPos){
     if (newPos[0] < 0 || newPos[0] >= this->height || newPos[1] < 0 || newPos[1] >= this->width){
         printf("Cannot make this move.\n");
@@ -164,12 +185,12 @@ int checkTile(maze* this, int* newPos){
     }
 }
 
+/**
+* @brief Calculate the player's coordinates after moving up
+* @param this the pointer to the maze struct
+* @return int 0 if the end is reached, 1 if the move is valid otherwise and 2 if the move is invalid
+*/
 int moveUp(maze* this){
-    // get both values from currentPos
-    // subtract 1 from currentPos[1] NOPE
-    // store as newPos
-    // call checkTile() and return result
-    // alert user that they have moved up if checkTile() returns 0 or 1
     int newPos[2] = {};
     newPos[0] = this->currentPos[0] - 1; 
     newPos[1] = this->currentPos[1];
@@ -181,6 +202,11 @@ int moveUp(maze* this){
     
 }
 
+/**
+* @brief Calculate the player's coordinates after moving left
+* @param this the pointer to the maze struct
+* @return int 0 if the end is reached, 1 if the move is valid otherwise and 2 if the move is invalid
+*/
 int moveLeft(maze* this){
     int newPos[2] = {};
     newPos[0] = this->currentPos[0]; 
@@ -192,6 +218,11 @@ int moveLeft(maze* this){
     return value;
 }
 
+/**
+* @brief Calculate the player's coordinates after moving down
+* @param this the pointer to the maze struct
+* @return int 0 if the end is reached, 1 if the move is valid otherwise and 2 if the move is invalid
+*/
 int moveDown(maze* this){
     int newPos[2] = {};
     newPos[0] = this->currentPos[0] + 1; 
@@ -203,6 +234,11 @@ int moveDown(maze* this){
     return value;
 }
 
+/**
+* @brief Calculate the player's coordinates after moving right
+* @param this the pointer to the maze struct
+* @return int 0 if the end is reached, 1 if the move is valid otherwise and 2 if the move is invalid
+*/
 int moveRight(maze* this){
     int newPos[2] = {};
     newPos[0] = this->currentPos[0]; 
@@ -214,8 +250,12 @@ int moveRight(maze* this){
     return value;
 }
 
+/**
+* @brief Get the player's input repeatedly
+* @param this the pointer to the maze struct
+* @return int 0 when the end is reached
+*/
 int getInput(maze* this){
-
     printf("W - Move up.\n");
     printf("A - Move left.\n");
     printf("S - Move down.\n");
