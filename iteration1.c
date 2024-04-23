@@ -34,11 +34,11 @@ int main(int argc, char* argv[]){
     y = randInt(0, height - 1);
     x = randInt(0, width - 1);
     maze[y][x] = 'S';
-    int count = 0;
+    int count = 0, direction = 0;
     bool moved,searchN,searchE,searchS,searchW,alternatives,noMove;
     while (count >= 0) {
         moved = false;
-        if (y == 0){ // Cannot move n
+        if (y == 0){
             searchN = false;
         } else {
             searchN = true;
@@ -48,18 +48,19 @@ int main(int argc, char* argv[]){
         } else {
             searchW = true;
         }
-        if (y < height){
+        if (y == (height - 1)){
             searchS = false;
         } else {
             searchS = true;
         }
-        if (x < width){
+        if (x == (width - 1)){
             searchE = false;
         } else {
             searchE = true;
         }
         while (moved == false){ // Repeat until new valid coordinate found
-            int direction = randInt(0,3);
+        printf("%d\n",count);
+            direction = randInt(0,3);
             if (direction == 0 && searchN == true){ // N
                 y -= 1;
                 searchN = false;
@@ -80,15 +81,25 @@ int main(int argc, char* argv[]){
             }
 
             if (maze[y][x] == '#'){
-                maze[y][x] = ' ';
+                maze[y][x] = 'M';
                 if (alternatives = true){ // Will only go back if other options
                     visited[count][0] = y, visited[count][1] = x;
-                    }
-                count += 1;
+                    count += 1;
+                }
                 moved = true;
+
+                // for (int a = 0; a < height; a++){
+                //     for (int b = 0; b < width; b++){
+                //         char e = maze[a][b];
+                //         printf("%c", e);
+                //     }
+                //     printf("\n");
+                // }
+                // printf("\n");
+                maze[y][x] = ' ';
             } else if (alternatives == false){ // If no valid options left
                 count -= 1;
-                if (count > 0){
+                if (count >= 0){
                     y = visited[count][0], x = visited[count][1]; // Go back to most recent
                 }
                 moved = true;
