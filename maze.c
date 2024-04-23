@@ -145,6 +145,7 @@ int createMaze(maze* this, char* filename){
         }
     }
 
+    fclose(file);
     int mazeTest = validateMaze(this);
     return mazeTest;
 
