@@ -20,47 +20,49 @@ int main(int argc, char* argv[]){
         exit(1);
     } 
 
+    srand(time(0));
     int height = atoi(argv[2]), width = atoi(argv[3]);
 
     char maze[height][width];
-    int visitedMap[height][width];
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             maze[i][j] = '#';
-            visitedMap[i][j] = 0;
         }
     }
+
     int visited[height*width][2];
-    srand(time(0));
     int y = 0, x = 0;
     y = randInt(0, height - 1);
     x = randInt(0, width - 1);
     maze[y][x] = 'S';
+
     int count = 0, direction = 0;
     bool moved,searchN,searchE,searchS,searchW,alternatives,noMove;
+    
     while (count >= 0) {
         moved = false;
-        if (y == 0 || (y > 1 && maze[y-2][x] == ' ')){
+        if (y == 0 || (y > 1 && maze[y-2][x] == ' ') || (y > 0 && maze[y-1][x] == ' ')){
             searchN = false;
         } else {
             searchN = true;
         }
-        if (x == 0 || (x > 1 && maze[y][x-2] == ' ')){
+        if (x == 0 || (x > 1 && maze[y][x-2] == ' ') || (x > 0 && maze[y][x-1] == ' ' )){
             searchW = false;
         } else {
             searchW = true;
         }
-        if (y == (height - 1) || (y < (height - 2) && maze[y+2][x] == ' ')){
+        if (y == (height - 1) || (y < (height - 2) && maze[y+2][x] == ' ') || (y < (height - 1) && maze[y+1][x] == ' ')){
             searchS = false;
         } else {
             searchS = true;
         }
-        if (x == (width - 1) ||  (x < (width - 2) && maze[y][x+2] == ' ')){
+        if (x == (width - 1) ||  (x < (width - 2) && maze[y][x+2] == ' ') || (y < (height - 1) && maze[y][x+1] == ' ')){
             searchE = false;
         } else {
             searchE = true;
         }
-        while (moved == false){ // Repeat until new valid coordinate found
+        
+        while (moved == false){
             direction = randInt(0,3);
             if (direction == 0 && searchN == true){ // N
                 y -= 1;
@@ -84,32 +86,21 @@ int main(int argc, char* argv[]){
             if (maze[y][x] == '#'){
                 maze[y][x] = ' ';
                 if (alternatives = true){ // Will only go back if other options
-                    visited[count][0] = y, visited[count][1] = x, visitedMap[y][x] = 1;
+                    visited[count][0] = y, visited[count][1] = x;
                     count += 1;
                 }
                 moved = true;
 
-            } else if (alternatives == false || visitedMap[y][x] == 1){ // Returns to most recent node with alternative routes if no alternatives here or its been here before
+            } else if (alternatives == false){ // Returns to most recent node with alternative routes if no alternatives
                 count -= 1;
-                printf("%d\n",count);
                 if (count >= 0){
                     y = visited[count][0], x = visited[count][1]; // Go back to most recent
                 }
                 moved = true;
             }
-            for (int a = 0; a < height; a++){
-                for (int b = 0; b < width; b++){
-                    if (a == y && b == x){
-                        printf("m");
-                    } else {
-                        printf("%d", visitedMap[a][b]);
-                    }
-                }
-                printf("\n");
-            }
-            printf("\n");
         }
     }
+
     bool endChosen = false;
     while (endChosen == false){
         y = randInt(0,height);
@@ -117,15 +108,14 @@ int main(int argc, char* argv[]){
         if (maze[y][x] == ' '){
             maze[y][x] = 'E';
             endChosen = true;
-            printf("%d %d %c \n",y,x,maze[y][x]);
         }
     }
+
     for (int y = 0; y < height; y++){
         for (int x = 0; x < width; x++){
-            char e = maze[y][x];
-            printf("%c", e);
+            fprintf(file, "%c", maze[y][x]);
         }
-        printf("\n");
+        fprintf(file,"\\n\n"); // Prints the \n to the text file followed by a newline, adapted from a response found at: https://www.quora.com/Is-it-possible-to-print-n-in-C
     }
     fclose(file);
     return 0;
