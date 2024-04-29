@@ -53,6 +53,17 @@ int move(int height, int width, char maze[][width], int y, int x){
             searched = true;
         }
     }
+    for (int a = 0; a < height; a++){
+        for (int b = 0; b < width; b++){
+            if ((a == y) && (b == x)){
+                printf("O");
+            } else {
+                printf("%c", maze[a][b]);
+            }
+        }
+        printf("\n"); // Prints the \n to the text file followed by a newline, adapted from a response found at: https://www.quora.com/Is-it-possible-to-print-n-in-C
+    }
+    printf("\n");
 
     if (deadend == false){
         maze[y][x] = ' '; // Break wall between the two
@@ -84,7 +95,8 @@ int main(int argc, char* argv[]){
         printf("Usage: mazegen <filename> <height> <width>.\n");
         exit(1);
     }
-
+    
+    srand(time(NULL));
     char* filename = argv[1];
     FILE* file = fopen(filename,"w");
     if (file == NULL){
