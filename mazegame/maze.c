@@ -322,7 +322,7 @@ int main(int argc, char* argv[]){
         getInput(this);
         printf("You have completed the maze!\n");
         freeMaze(this);
-        //exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
     return 0;
 }
