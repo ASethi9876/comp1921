@@ -113,9 +113,8 @@ int createMaze(maze* this, char* filename){
     int width = 0;
     while (fgets(line, sizeof(line), file)){ // sizeof(line) acts like the buffer
         int i = 0;
-        while (line[i+1] != 'n'){ // stops at the newline
+        while (line[i] != '\n' && line[i] != '\0'){ // stops at the newline
             tempArray[count][i] = line[i];
-            printf("%c",tempArray[count][i]);
             i++;
         }
         if (i < 5 || i > 100 || (width != i && count > 0)){  // check if wrong size or line width is different to previous width
@@ -323,7 +322,7 @@ int main(int argc, char* argv[]){
         getInput(this);
         printf("You have completed the maze!\n");
         freeMaze(this);
-        //exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
     return 0;
 }
