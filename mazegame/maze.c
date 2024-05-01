@@ -316,13 +316,13 @@ int main(int argc, char* argv[]){
     } else if (mazeCheck == 3){
         printf("Error: maze file does not have expected format.\n");
         freeMaze(this);
-        printf("3");
+        exit(EXIT_INV);
     } else {
         printf("File %s successfully loaded.\n",argv[1]);
         getInput(this);
         printf("You have completed the maze!\n");
         freeMaze(this);
-        exit(EXIT_SUCCESS);
+        printf(0);
     }
     return 0;
 }
