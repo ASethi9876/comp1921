@@ -316,7 +316,7 @@ int main(int argc, char* argv[]){
     } else if (mazeCheck == 3){
         printf("Error: maze file does not have expected format.\n");
         freeMaze(this);
-        exit(EXIT_INV);
+        printf("3");
     } else {
         printf("File %s successfully loaded.\n",argv[1]);
         getInput(this);
