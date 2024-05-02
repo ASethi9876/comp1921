@@ -44,6 +44,7 @@ void move(int height, int width, char maze[][width], int y, int x){
     } else {
         searchE = true;
     }
+    
     while (searched == false){
         direction = randInt(0,3);
         if (searchN == false && searchE == false && searchS == false && searchW == false){
@@ -130,7 +131,7 @@ int main(int argc, char* argv[]){
         for (int x = 0; x < width; x++){
             fprintf(file, "%c", maze[y][x]);
         }
-        fprintf(file,"\\n\n"); // Prints the \n to the text file followed by a newline, adapted from a response found at: https://www.quora.com/Is-it-possible-to-print-n-in-C
+        fprintf(file,"\n");
     }
     fclose(file);
     return 0;
